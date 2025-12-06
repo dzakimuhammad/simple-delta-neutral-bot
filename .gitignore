@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# IDE
+.vscode/
+
+# Project specific (add your config files here)
+config.yaml
+

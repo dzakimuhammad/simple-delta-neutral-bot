@@ -1,0 +1,13 @@
+pair: BTC-USDT
+notional: 11        # USD position size
+interval_minutes: 5
+
+exchanges:
+  hyperliquid:
+    base_url: "https://api.hyperliquid-testnet.xyz"
+    api_key: "HYPERLIQUID-ACCOUNT-ADDRESS"
+    api_secret: "HYPERLIQUID-API-SECRET"
+  binance:
+    base_url: "https://testnet.binancefuture.com"
+    api_key: "BINANCE-API-KEY"
+    api_secret: "BINANCE-API-SECRET"
