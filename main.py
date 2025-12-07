@@ -1,4 +1,4 @@
-import asyncio, yaml, time
+import asyncio, yaml
 from exchanges.hyperliquid import Hyperliquid
 from exchanges.binance import BinanceFutures
 from strategy.delta_neutral import DeltaNeutralStrategy
@@ -8,18 +8,22 @@ async def main():
     cfg = yaml.safe_load(open("config.yaml"))
 
     exA = Hyperliquid(cfg["exchanges"]["hyperliquid"])
-    exA.get_mid_price("BTC")
+    exB = BinanceFutures(cfg["exchanges"]["binance"])
 
-    # Closed all positions first
+    strategy = DeltaNeutralStrategy(exA, exB, cfg)
+    await strategy.initialize()
 
-    # Evaluate mid price on both exchanges
+    interval = cfg["interval_minutes"] * 60
 
-    # Open long on lower price, short on higher price
+    log(f"Starting bot - {cfg['base_asset']}-PERP, ${cfg['notional']} size, {cfg['interval_minutes']}min interval")
 
-    exA.market_order("BTC", "LONG", cfg["notional"])
-    print("We wait for 5s before closing")
-    time.sleep(5)
-    
-    exA.market_close("BTC")
+    end_time = asyncio.get_event_loop().time() + (cfg["max_run_time_minutes"] * 60)
+    while asyncio.get_event_loop().time() < end_time:
+        await strategy.cycle()
+        log(f"Waiting {cfg['interval_minutes']} minutes...\n")
+        await asyncio.sleep(interval)
+    log(f"{cfg['max_run_time_minutes']} minute limit reached. Stopping bot.")
+    await strategy.close_positions()
+
 if __name__ == "__main__":
     asyncio.run(main())

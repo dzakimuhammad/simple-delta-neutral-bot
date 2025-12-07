@@ -1,5 +1,4 @@
 aiohttp>=3.8.0
 PyYAML>=6.0
-
+eth-account>=0.8.0
 hyperliquid-python-sdk>=0.21.0
-binance-sdk-derivatives-trading-usds-futures>=4.0.0

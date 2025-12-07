@@ -1,5 +1,4 @@
 from enum import Enum
-from dataclasses import dataclass
 from decimal import Decimal
 
 from models.asset import ExchangeAsset
@@ -8,10 +7,14 @@ class Side(Enum):
     LONG = "LONG"
     SHORT = "SHORT"
 
-
-@dataclass
 class Order:
     asset: ExchangeAsset
     side: Side
     price: Decimal
     size: Decimal
+
+    def __init__(self, asset: ExchangeAsset, side: Side, price: Decimal, size: Decimal):
+        self.asset = asset
+        self.side = side
+        self.price = price
+        self.size = size

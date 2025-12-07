@@ -1,15 +1,16 @@
 import aiohttp, time, hmac, hashlib
 from decimal import Decimal
+from exchanges.base import Exchange
 from utils.logger import log
-from models.asset import ExchangeAsset, Exchange
+from models.asset import ExchangeAsset, ExchangeName, TradingPair
 from models.order import Order, Side
 
-class BinanceFutures():
+class BinanceFutures(Exchange):
     def __init__(self, cfg):
-        self.base = cfg["base_url"]
+        self.name = ExchangeName.BINANCE
+        self.base_url = cfg["base_url"]
         self.key = cfg["api_key"]
         self.secret = cfg["api_secret"]
-
         self.last_order = None
 
     def _sign(self, params):
@@ -19,34 +20,32 @@ class BinanceFutures():
         ).hexdigest()
         return query + "&signature=" + sig
 
-    async def get_asset_info(self, pair) -> ExchangeAsset:
-        symbol = pair.replace("-", "")
+    async def get_asset_info(self, pair: TradingPair) -> ExchangeAsset:
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"{self.base}/fapi/v1/exchangeInfo") as r:
+            async with session.get(f"{self.base_url}/fapi/v1/exchangeInfo") as r:
                 data = await r.json()
                 if "symbols" not in data or len(data["symbols"]) == 0:
                     raise Exception(f"Error getting asset info: {data}")
                 for sym in data["symbols"]:
-                    if sym["symbol"] == symbol:
+                    if sym["symbol"] == pair.binance_symbol():
                         return ExchangeAsset(
                             pair=pair,
-                            exchange=Exchange.BINANCE,
-                            exchange_symbol=symbol,
+                            exchange=self.name,
+                            exchange_symbol=sym["symbol"],
                             base_quantity_precision=sym["quantityPrecision"]
                         )
                 log(f"Binance asset info not found for {pair}")
                 raise Exception(f"Asset info not found for {pair}")
     
-    async def get_price(self, pair) -> float:
-        symbol = pair.replace("-", "")
+    async def get_price(self, asset: ExchangeAsset) -> float:
         async with aiohttp.ClientSession() as session:
-            async with session.get(f"{self.base}/fapi/v2/ticker/price?symbol={symbol}") as r:
+            async with session.get(f"{self.base_url}/fapi/v2/ticker/price?symbol={asset.exchange_symbol}") as r:
                 data = await r.json()
                 if "price" not in data:
                     raise Exception(f"Error getting price: {data}")
                 return float(data["price"])
 
-    async def _market_order(self, asset: ExchangeAsset, side: Side, price: float, notional: float) -> Order:
+    async def open_position(self, asset: ExchangeAsset, side: Side, price: float, notional: float) -> Order:
         qty = round(notional / price, asset.base_quantity_precision)
 
         params = {
@@ -57,7 +56,7 @@ class BinanceFutures():
             "timestamp": int(time.time() * 1000),
         }
 
-        url = f"{self.base}/fapi/v1/order?{self._sign(params)}"
+        url = f"{self.base_url}/fapi/v1/order?{self._sign(params)}"
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers={"X-MBX-APIKEY": self.key}) as r:
@@ -73,22 +72,19 @@ class BinanceFutures():
             size=Decimal(str(qty))
         )
         self.last_order = order
-        log(f"Opening {side.value} {qty} {asset.pair} @ ${price}")
+        log(f"Opening {side.value} {qty} {asset.pair.base_asset} on Binance @ ${price}")
         return order
 
     async def open_long(self, asset: ExchangeAsset, price: float, notional: float) -> Order:
-        return await self._market_order(asset, Side.LONG, price, notional)
+        return await self.open_position(asset, Side.LONG, price, notional)
 
     async def open_short(self, asset: ExchangeAsset, price: float, notional: float) -> Order:
-        return await self._market_order(asset, Side.SHORT, price, notional)
+        return await self.open_position(asset, Side.SHORT, price, notional)
 
-    async def close_position(self, asset: ExchangeAsset, price: float) -> Order:
+    async def close_position(self, close_price: float) -> Order:
         """Close a position by placing opposite side order"""
         if not self.last_order:
             raise Exception("No position to close")
-        
-        if self.last_order.asset.pair != asset.pair:
-            raise Exception("Asset pair mismatch on close")
             
         close_side = "BUY" if self.last_order.side == Side.SHORT else "SELL"
 
@@ -100,7 +96,7 @@ class BinanceFutures():
             "timestamp": int(time.time() * 1000),
         }
 
-        url = f"{self.base}/fapi/v1/order?{self._sign(params)}"
+        url = f"{self.base_url}/fapi/v1/order?{self._sign(params)}"
 
         async with aiohttp.ClientSession() as session:
             async with session.post(url, headers={"X-MBX-APIKEY": self.key}) as r:
@@ -112,8 +108,8 @@ class BinanceFutures():
         close_order = Order(
             asset=self.last_order.asset,
             side=Side.SHORT if self.last_order.side == Side.LONG else Side.LONG,
-            price=Decimal(str(price)),
+            price=Decimal(str(close_price)),
             size=self.last_order.size
         )
-        log(f"Closed {self.last_order.side.value} {self.last_order.asset.pair} @ ${price}")
+        log(f"Closed {self.last_order.side.value} {self.last_order.asset.pair.base_asset} on Binance @ ${close_price}")
         return close_order
