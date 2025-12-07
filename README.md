@@ -313,23 +313,17 @@ The bot will:
 - Testnet only
 
 ### Potential Enhancements
-- Add limit order support for better execution prices
 - Implement fee-adjusted PnL calculations
+- Add limit order support for better execution prices
 - Implement proper risk management (max position size, stop-loss)
 - Add WebSocket connections for real-time price updates
-- Add database for historical PnL tracking
+- Add database for historical Orders and PnL tracking
 - Support mainnet trading with proper safety checks
 - Add multiple trading pair support
 
 ## ⚠️ Safety Notes
 
-⚠️ **This bot is designed for testnet use only.** Before using with real funds:
-- Implement comprehensive risk management
-- Add position size limits and circuit breakers
-- Include fee calculations in PnL
-- Test thoroughly in testnet environments
-- Add proper error handling and retry logic
-- Implement monitoring and alerting systems
+⚠️ **This bot is designed for testnet use only.**
 
 ---
 
