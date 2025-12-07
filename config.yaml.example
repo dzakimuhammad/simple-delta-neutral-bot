@@ -1,7 +1,7 @@
 pair: BTC-USDT
 notional: 200        # USD position size
 interval_minutes: 5
-max_run_time_minutes: 20
+max_runtime_minutes: 30
 
 exchanges:
   hyperliquid:

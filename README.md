@@ -2,6 +2,17 @@
 
 A Python-based automated trading bot that maintains delta-neutral positions across two perpetual futures exchanges (Hyperliquid and Binance) by opening and closing positions at regular intervals.
 
+## 📋 Table of Contents
+- [Overview](#overview)
+- [Strategy Logic](#strategy-logic)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Design Decisions](#design-decisions)
+- [Limitations & Future Work](#limitations--future-work)
+- [Safety Notes](#safety-notes)
+
 ## Overview
 
 This bot implements a delta-neutral trading strategy by:
@@ -9,7 +20,72 @@ This bot implements a delta-neutral trading strategy by:
 - Opening a short position on another exchange with equal notional value
 - Maintaining near-zero net delta exposure
 
-## Features
+## Strategy Logic
+
+### What is Delta-Neutral Trading?
+
+Delta-neutral trading is a strategy that aims to have zero or near-zero directional exposure to price movements. By simultaneously holding equal but opposite positions (long and short) on the same asset across different exchanges, the strategy seeks to profit from:
+- **Price convergence**: When prices between exchanges converge
+- **Funding rate arbitrage**: Differences in funding rates between perpetual futures contracts
+- **Market inefficiencies**: Temporary price discrepancies between exchanges
+
+### How This Bot Implements Delta-Neutral Strategy
+
+#### 1. **Initialization Phase**
+   - Connects to both Hyperliquid and Binance testnet exchanges
+   - Fetches asset information (symbol format, quantity precision, etc.)
+   - Synchronizes precision settings to ensure consistent position sizes
+   - Uses the stricter precision requirement between the two exchanges
+
+#### 2. **Trading Cycle Execution**
+
+Each trading cycle follows this sequence:
+
+**Step 1: Close Existing Positions (if any)**
+   - If there are open positions from the previous cycle, close them simultaneously
+   - Fetch current prices from both exchanges concurrently
+   - Execute market orders to close both long and short positions
+   - Calculate and log the PnL for the closed cycle
+
+**Step 2: Calculate PnL**
+   - **Long Position PnL**: `(Exit Price - Entry Price) × Position Size`
+   - **Short Position PnL**: `(Entry Price - Exit Price) × Position Size`
+   - **Total Cycle PnL**: Sum of both positions
+   - Note: PnL calculation excludes trading fees for simplicity
+
+**Step 3: Fetch Current Market Prices**
+   - Query both exchanges simultaneously for the latest prices
+   - Uses async operations for efficiency
+
+**Step 4: Determine Position Allocation**
+   - **Key Decision**: Open the long position on the exchange with the **lower price**
+   - This maximizes the potential profit from price convergence
+   - Example:
+     - Hyperliquid BTC price: $89,207
+     - Binance BTC price: $89,323
+     - Action: **LONG on Hyperliquid**, **SHORT on Binance**
+
+**Step 5: Open New Positions**
+   - Calculate position size: `Position Size = Notional Value / Entry Price`
+   - Open long and short positions concurrently using market orders
+   - Both positions have equal notional value (e.g., $200)
+   - Positions are matched in size but opposite in direction
+
+**Step 6: Calculate Entry Delta**
+   - Entry Delta = `(Long Price × Size) - (Short Price × Size)`
+   - Measures the initial price difference between positions
+   - A smaller delta indicates better entry execution
+
+**Step 7: Wait for Next Cycle**
+   - Sleep for the configured interval (e.g., 5 minutes)
+   - Repeat the cycle until the maximum runtime is reached
+
+#### 3. **Graceful Shutdown**
+   - When the maximum runtime is reached, close all open positions
+   - Calculate final PnL
+   - Exit cleanly without leaving positions open
+
+## ✨ Features
 
 - **Multi-Exchange Support**: Integrates with Hyperliquid (testnet) and Binance Futures (testnet)
 - **Delta-Neutral Strategy**: Automatically balances long and short positions
@@ -18,7 +94,7 @@ This bot implements a delta-neutral trading strategy by:
 - **Async Operations**: Efficient concurrent API calls
 - **Comprehensive Logging**: Timestamped logs with exchange, side, size, and price information
 
-## Setup Instructions
+## 🚀 Getting Started
 
 ### Prerequisites
 
@@ -45,10 +121,16 @@ This bot implements a delta-neutral trading strategy by:
    
    Copy the example configuration file:
    ```bash
+   cp config.yaml.example config.yaml
+   ```
+   
+   Or on Windows:
+   ```cmd
    copy config.yaml.example config.yaml
    ```
    
    Edit `config.yaml` with your settings:
+   
    ```yaml
    base_asset: BTC
    quote_asset: USDT
@@ -69,19 +151,20 @@ This bot implements a delta-neutral trading strategy by:
 
 ### Getting API Credentials
 
-**Hyperliquid Testnet:**
-1. Create a wallet on Hyperliquid testnet
-2. Use your wallet address as `api_key`
-3. Export your private key as `api_secret`
+   **Hyperliquid Testnet:**
+   - Create a wallet on [Hyperliquid testnet](https://app.hyperliquid-testnet.xyz/)
+   - Use your wallet address as `api_key`
+   - Export your private key as `api_secret`
 
-**Binance Futures Testnet:**
-1. Register at [Binance Futures Testnet](https://testnet.binancefuture.com/)
-2. Generate API key and secret from account settings
-3. Enable futures trading permissions
+   **Binance Futures Testnet:**
+   - Register at [Binance Futures Testnet](https://testnet.binancefuture.com/)
+   - Generate API key and secret from account settings
+   - Enable futures trading permissions
 
-## How to Run
 
-### Start the Bot
+## 💻 Usage
+
+### Running the Bot
 
 ```bash
 python main.py
@@ -171,7 +254,7 @@ The bot will:
     └── logger.py            # Logging utility
 ```
 
-## Design Decisions
+## 🏗️ Design Decisions
 
 ### Exchange Integration Approach
 
@@ -234,26 +317,25 @@ The bot will:
 - **eth-account**: Ethereum wallet management for Hyperliquid
 - **hyperliquid-python-sdk**: Official Hyperliquid integration
 
-## Limitations & Future Improvements
+## 🔮 Limitations & Future Work
 
 ### Current Limitations
 - Uses market orders only (no limit orders)
 - Supports one trading pair at a time
 - Simplified PnL calculation without fees
-- Fixed 20-minute runtime
+- Configurable runtime (default 30 minutes)
 - Testnet only
 
 ### Potential Enhancements
 - Add limit order support for better execution prices
 - Implement fee-adjusted PnL calculations
-- Add multiple trading pair support
 - Implement proper risk management (max position size, stop-loss)
 - Add WebSocket connections for real-time price updates
-- Create web dashboard for monitoring
 - Add database for historical PnL tracking
 - Support mainnet trading with proper safety checks
+- Add multiple trading pair support
 
-## Safety Notes
+## ⚠️ Safety Notes
 
 ⚠️ **This bot is designed for testnet use only.** Before using with real funds:
 - Implement comprehensive risk management
@@ -263,10 +345,14 @@ The bot will:
 - Add proper error handling and retry logic
 - Implement monitoring and alerting systems
 
-## License
+## 📄 License
 
-MIT License - Feel free to use  and modify as needed.
+MIT License - Feel free to use and modify as needed.
 
-## Support
+## 🤝 Support
 
-For issues or questions, please open an issue on GitHub.
+For issues or questions, please [open an issue](https://github.com/dzakimuhammad/simple-delta-neutral-bot/issues) on GitHub.
+
+---
+
+**Disclaimer**: This bot is for educational and testing purposes only. Use at your own risk.

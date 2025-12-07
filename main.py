@@ -6,6 +6,7 @@ from utils.logger import log
 
 async def main():
     cfg = yaml.safe_load(open("config.yaml"))
+    max_runtime = cfg.get("max_runtime_minutes", 30)  # Default to 30 minutes if not specified
 
     exA = Hyperliquid(cfg["exchanges"]["hyperliquid"])
     exB = BinanceFutures(cfg["exchanges"]["binance"])
@@ -17,12 +18,12 @@ async def main():
 
     log(f"Starting bot - {cfg['base_asset']}-PERP, ${cfg['notional']} size, {cfg['interval_minutes']}min interval")
 
-    end_time = asyncio.get_event_loop().time() + (cfg["max_run_time_minutes"] * 60)
+    end_time = asyncio.get_event_loop().time() + (max_runtime * 60)
     while asyncio.get_event_loop().time() < end_time:
         await strategy.cycle()
         log(f"Waiting {cfg['interval_minutes']} minutes...\n")
         await asyncio.sleep(interval)
-    log(f"{cfg['max_run_time_minutes']} minute limit reached. Stopping bot.")
+    log(f"{max_runtime} minute limit reached. Stopping bot.")
     await strategy.close_positions()
 
 if __name__ == "__main__":
