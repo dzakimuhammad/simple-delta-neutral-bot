@@ -37,13 +37,15 @@ class Hyperliquid(Exchange):
                 base_quantity_precision=decimalSz
             )
         except Exception as e:
-            log(f"Hyperliquid asset info not found for {asset_name}: {e}")
-            raise
+            raise Exception(f"Asset info not found for {asset_name}: {e}")
 
     async def get_price(self, asset: ExchangeAsset) -> Decimal:
-        all_mids = self.Info.all_mids()
-        mid_price = all_mids[asset.exchange_symbol]
-        return Decimal(str(mid_price))
+        try:
+            all_mids = self.Info.all_mids()
+            mid_price = all_mids[asset.exchange_symbol]
+            return Decimal(str(mid_price))
+        except Exception as e:
+            raise Exception(f"Error getting price: {e}")
 
     async def open_position(self, asset: ExchangeAsset, side: Side, price: Decimal, notional: Decimal) -> Order:
         # Convert from notional to size in asset units
@@ -70,11 +72,9 @@ class Hyperliquid(Exchange):
                         self.last_order = order
                         return order
                     except KeyError:
-                        log(f'Error on opening {asset.pair.base_asset} position on Hyperliquid: {status["error"]}')
-                        raise Exception(f'Order failed: {status["error"]}')
+                        raise Exception(f'Error on opening {asset.pair.base_asset} position: {status["error"]}')
         except Exception as e:
-            log(f"Exception during market order on Hyperliquid: {e}")
-            raise
+            raise Exception(f"Open Market Order on Hyperliquid failed: {e}")
 
     async def open_long(self, asset: ExchangeAsset, price: Decimal, notional: Decimal) -> Order:
         """Open a long position"""
@@ -108,7 +108,6 @@ class Hyperliquid(Exchange):
                     )
                     return close_order
                 except KeyError:
-                    log(f'Error on closing {self.last_order.asset.pair.base_asset} position on Hyperliquid: {status["error"]}')
-                    raise Exception(f'Close failed: {status["error"]}')
+                    raise Exception(f'Error on closing position: {status["error"]}')
         
         raise Exception(f"Close failed with status: {order_result.get('status', 'unknown')}")
