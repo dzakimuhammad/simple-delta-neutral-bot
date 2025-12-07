@@ -77,8 +77,6 @@ class DeltaNeutralStrategy:
             if len(close_orders) == 2:
                 pnl = self.calculate_pnl(close_orders)
                 log(f"Cycle Position PnL: ${str(pnl)}")
-            
-            log("Positions closed.\n")
 
         # Fetch current prices from both exchanges concurrently
         price_A, price_B = await asyncio.gather(

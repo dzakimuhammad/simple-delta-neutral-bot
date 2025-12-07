@@ -180,56 +180,41 @@ The bot will:
 ### Expected Output
 
 ```
-[16:12:19] Initializing Delta Neutral Strategy on Hyperliquid and Binance for BTC
-[16:12:21] Using Binance precision: 3 decimal places
-[16:12:21] Starting bot - BTC-PERP, $180 size, 5min interval
-[16:12:22] Hyperliquid price: $89207.0000
-[16:12:22] Binance price: $89323.3000
-[16:12:22] Opening LONG on Hyperliquid, SHORT on Binance...
-[16:12:25] Opening LONG 0.002 BTC on Hyperliquid @ $89214.0
-[16:12:27] Opening SHORT 0.002 BTC on Binance @ $89323.3
-[16:12:27] Entry Delta: $-0.2186 (-0.0002%)
-[16:12:27] Waiting 5 minutes...
+[19:21:02] Initializing Delta Neutral Strategy on Hyperliquid and Binance for BTC
+[19:21:03] Using Binance precision: 3 decimal places
+[19:21:03] Starting bot - BTC-PERP, $180 size, 5min interval
+[19:21:04] Hyperliquid price: $89055.5, Binance price: $89201.10
+[19:21:04] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:21:05] Opening LONG 0.002 BTC on Hyperliquid @ $89066.0
+[19:21:05] Opening SHORT 0.002 BTC on Binance @ $89201.10
+[19:21:05] Entry Delta: $-0.27020 (-0.0003%)
+[19:21:05] Waiting 5 minutes...
 
-[16:17:27] Closing positions...
-[16:17:33] Closed LONG BTC on Hyperliquid @ $89202.0
-[16:17:36] Closed SHORT BTC on Binance @ $89325.7
-[16:17:36] Long PnL: $-0.0240 (Entry: $89214.0000, Exit: $89202.0000)
-[16:17:36] Short PnL: $-0.0048 (Entry: $89323.3000, Exit: $89325.7000)
-[16:17:36] Cycle Position PnL: $-0.0288
-[16:17:36] Positions closed.
+[19:26:05] Closing positions...
+[19:26:10] Closed LONG BTC on Hyperliquid @ $89011.0
+[19:26:10] Closed SHORT BTC on Binance @ $89178.20
+[19:26:10] Long PnL: $-0.1100 (Entry: $89066.0, Exit: $89011.0)
+[19:26:10] Short PnL: $0.04580 (Entry: $89201.10, Exit: $89178.20)
+[19:26:10] Cycle Position PnL: $-0.06420
+[19:26:10] Hyperliquid price: $89027.5, Binance price: $89178.20
+[19:26:10] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:26:11] Opening LONG 0.002 BTC on Hyperliquid @ $89044.0
+[19:26:11] Opening SHORT 0.002 BTC on Binance @ $89178.20
+[19:26:11] Entry Delta: $-0.26840 (-0.0003%)
+[19:26:11] Waiting 5 minutes...
 
-[16:17:38] Hyperliquid price: $89209.5000
-[16:17:38] Binance price: $89325.8000
-[16:17:38] Opening LONG on Hyperliquid, SHORT on Binance...
-[16:17:39] Opening LONG 0.002 BTC on Hyperliquid @ $89217.0
-[16:17:42] Opening SHORT 0.002 BTC on Binance @ $89325.8
-[16:17:42] Entry Delta: $-0.2176 (-0.0002%)
-[16:17:42] Waiting 5 minutes...
-
-[16:22:42] Closing positions...
-[16:22:45] Closed LONG BTC on Hyperliquid @ $89069.0
-[16:22:46] Closed SHORT BTC on Binance @ $89197.9
-[16:22:46] Long PnL: $-0.2960 (Entry: $89217.0000, Exit: $89069.0000)
-[16:22:46] Short PnL: $+0.2558 (Entry: $89325.8000, Exit: $89197.9000)
-[16:22:46] Cycle Position PnL: $-0.0402
-[16:22:46] Positions closed.
-
-[16:22:46] Hyperliquid price: $89084.5000
-[16:22:46] Binance price: $89197.9000
-[16:22:46] Opening LONG on Hyperliquid, SHORT on Binance...
-[16:22:48] Opening LONG 0.002 BTC on Hyperliquid @ $89104.0
-[16:22:48] Opening SHORT 0.002 BTC on Binance @ $89197.9
-[16:22:48] Entry Delta: $-0.1878 (-0.0002%)
-[16:22:48] Waiting 5 minutes...
-
-[16:27:48] Closing positions...
-[16:27:50] Closed LONG BTC on Hyperliquid @ $88987.0
-[16:27:52] Closed SHORT BTC on Binance @ $89124.5
-[16:27:52] Long PnL: $-0.2340 (Entry: $89104.0000, Exit: $88987.0000)
-[16:27:52] Short PnL: $+0.1468 (Entry: $89197.9000, Exit: $89124.5000)
-[16:27:52] Cycle Position PnL: $-0.0872
-[16:27:52] Positions closed.
+[19:31:11] Closing positions...
+[19:31:15] Closed LONG BTC on Hyperliquid @ $89081.0
+[19:31:15] Closed SHORT BTC on Binance @ $89238.50
+[19:31:15] Long PnL: $0.0740 (Entry: $89044.0, Exit: $89081.0)
+[19:31:15] Short PnL: $-0.12060 (Entry: $89178.20, Exit: $89238.50)
+[19:31:15] Cycle Position PnL: $-0.04660
+[19:31:15] Hyperliquid price: $89095.5, Binance price: $89238.50
+[19:31:15] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:31:16] Opening LONG 0.002 BTC on Hyperliquid @ $89110.0
+[19:31:16] Opening SHORT 0.002 BTC on Binance @ $89238.50
+[19:31:16] Entry Delta: $-0.25700 (-0.0003%)
+[19:31:16] Waiting 5 minutes...
 ...
 ```
 
@@ -241,6 +226,7 @@ The bot will:
 ├── config.yaml               # Configuration file (create from example)
 ├── config.yaml.example       # Example configuration
 ├── requirements.txt          # Python dependencies
+├── bot.log                   # Bot log file
 ├── exchanges/
 │   ├── base.py              # Abstract Exchange base class
 │   ├── binance.py           # Binance Futures implementation

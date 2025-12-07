@@ -1,0 +1,82 @@
+[19:21:02] Initializing Delta Neutral Strategy on Hyperliquid and Binance for BTC
+[19:21:03] Using Binance precision: 3 decimal places
+[19:21:03] Starting bot - BTC-PERP, $180 size, 5min interval
+[19:21:04] Hyperliquid price: $89055.5, Binance price: $89201.10
+[19:21:04] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:21:05] Opening LONG 0.002 BTC on Hyperliquid @ $89066.0
+[19:21:05] Opening SHORT 0.002 BTC on Binance @ $89201.10
+[19:21:05] Entry Delta: $-0.27020 (-0.0003%)
+[19:21:05] Waiting 5 minutes...
+
+[19:26:05] Closing positions...
+[19:26:10] Closed LONG BTC on Hyperliquid @ $89011.0
+[19:26:10] Closed SHORT BTC on Binance @ $89178.20
+[19:26:10] Long PnL: $-0.1100 (Entry: $89066.0, Exit: $89011.0)
+[19:26:10] Short PnL: $0.04580 (Entry: $89201.10, Exit: $89178.20)
+[19:26:10] Cycle Position PnL: $-0.06420
+[19:26:10] Hyperliquid price: $89027.5, Binance price: $89178.20
+[19:26:10] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:26:11] Opening LONG 0.002 BTC on Hyperliquid @ $89044.0
+[19:26:11] Opening SHORT 0.002 BTC on Binance @ $89178.20
+[19:26:11] Entry Delta: $-0.26840 (-0.0003%)
+[19:26:11] Waiting 5 minutes...
+
+[19:31:11] Closing positions...
+[19:31:15] Closed LONG BTC on Hyperliquid @ $89081.0
+[19:31:15] Closed SHORT BTC on Binance @ $89238.50
+[19:31:15] Long PnL: $0.0740 (Entry: $89044.0, Exit: $89081.0)
+[19:31:15] Short PnL: $-0.12060 (Entry: $89178.20, Exit: $89238.50)
+[19:31:15] Cycle Position PnL: $-0.04660
+[19:31:15] Hyperliquid price: $89095.5, Binance price: $89238.50
+[19:31:15] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:31:16] Opening LONG 0.002 BTC on Hyperliquid @ $89110.0
+[19:31:16] Opening SHORT 0.002 BTC on Binance @ $89238.50
+[19:31:16] Entry Delta: $-0.25700 (-0.0003%)
+[19:31:16] Waiting 5 minutes...
+
+[19:36:16] Closing positions...
+[19:36:20] Closed LONG BTC on Hyperliquid @ $89062.0
+[19:36:21] Closed SHORT BTC on Binance @ $89224.00
+[19:36:21] Long PnL: $-0.0960 (Entry: $89110.0, Exit: $89062.0)
+[19:36:21] Short PnL: $0.02900 (Entry: $89238.50, Exit: $89224.00)
+[19:36:21] Cycle Position PnL: $-0.06700
+[19:36:21] Hyperliquid price: $89069.5, Binance price: $89224.00
+[19:36:21] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:36:22] Opening LONG 0.002 BTC on Hyperliquid @ $89077.0
+[19:36:22] Opening SHORT 0.002 BTC on Binance @ $89224.00
+[19:36:22] Entry Delta: $-0.29400 (-0.0003%)
+[19:36:22] Waiting 5 minutes...
+
+[19:41:22] Closing positions...
+[19:41:26] Closed LONG BTC on Hyperliquid @ $89064.0
+[19:41:26] Closed SHORT BTC on Binance @ $89231.40
+[19:41:26] Long PnL: $-0.0260 (Entry: $89077.0, Exit: $89064.0)
+[19:41:26] Short PnL: $-0.01480 (Entry: $89224.00, Exit: $89231.40)
+[19:41:26] Cycle Position PnL: $-0.04080
+[19:41:27] Hyperliquid price: $89072.5, Binance price: $89247.10
+[19:41:27] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:41:28] Opening LONG 0.002 BTC on Hyperliquid @ $89081.0
+[19:41:28] Opening SHORT 0.002 BTC on Binance @ $89247.10
+[19:41:28] Entry Delta: $-0.33220 (-0.0004%)
+[19:41:28] Waiting 5 minutes...
+
+[19:46:28] Closing positions...
+[19:46:32] Closed LONG BTC on Hyperliquid @ $89290.0
+[19:46:32] Closed SHORT BTC on Binance @ $89432.10
+[19:46:32] Long PnL: $0.4180 (Entry: $89081.0, Exit: $89290.0)
+[19:46:32] Short PnL: $-0.37000 (Entry: $89247.10, Exit: $89432.10)
+[19:46:32] Cycle Position PnL: $0.04800
+[19:46:33] Hyperliquid price: $89298.0, Binance price: $89432.10
+[19:46:33] Opening LONG on Hyperliquid, SHORT on Binance...
+[19:46:34] Opening LONG 0.002 BTC on Hyperliquid @ $89296.0
+[19:46:34] Opening SHORT 0.002 BTC on Binance @ $89432.10
+[19:46:34] Entry Delta: $-0.27220 (-0.0003%)
+[19:46:34] Waiting 5 minutes...
+
+[19:51:34] 30 minute limit reached. Stopping bot.
+[19:51:34] Closing positions...
+[19:51:36] Closed LONG BTC on Hyperliquid @ $89253.0
+[19:51:37] Closed SHORT BTC on Binance @ $89432.10
+[19:51:37] Long PnL: $-0.0860 (Entry: $89296.0, Exit: $89253.0)
+[19:51:37] Short PnL: $0.00000 (Entry: $89432.10, Exit: $89432.10)
+[19:51:37] Cycle Position PnL: $-0.08600
