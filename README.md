@@ -1,6 +1,6 @@
-# Delta-Neutral Trading Bot
+# Delta-Neutral Market Making Bot
 
-A Python-based automated trading bot that maintains delta-neutral positions across two perpetual futures exchanges (Hyperliquid and Binance) by opening and closing positions at regular intervals.
+A Python-based automated market making bot that maintains delta-neutral positions across two perpetual futures exchanges (Hyperliquid and Binance) by opening and closing positions at regular intervals.
 
 ## 📋 Table of Contents
 - [Overview](#overview)
@@ -15,21 +15,21 @@ A Python-based automated trading bot that maintains delta-neutral positions acro
 
 ## Overview
 
-This bot implements a delta-neutral trading strategy by:
+This bot implements a delta-neutral market making strategy by:
 - Opening a long position on one exchange
 - Opening a short position on another exchange with equal notional value
 - Maintaining near-zero net delta exposure
 
 ## Strategy Logic
 
-### What is Delta-Neutral Trading?
+### What is Delta-Neutral Market Making?
 
-Delta-neutral trading is a strategy that aims to have zero or near-zero directional exposure to price movements. By simultaneously holding equal but opposite positions (long and short) on the same asset across different exchanges, the strategy seeks to profit from:
+Delta-neutral market making is a strategy that aims to have zero or near-zero directional exposure to price movements. By simultaneously holding equal but opposite positions (long and short) on the same asset across different exchanges, the strategy seeks to profit from:
 - **Price convergence**: When prices between exchanges converge
 - **Funding rate arbitrage**: Differences in funding rates between perpetual futures contracts
 - **Market inefficiencies**: Temporary price discrepancies between exchanges
 
-### How This Bot Implements Delta-Neutral Strategy
+### How This Bot Implements Delta-Neutral Market Making
 
 #### 1. **Initialization Phase**
    - Connects to both Hyperliquid and Binance testnet exchanges
@@ -37,9 +37,9 @@ Delta-neutral trading is a strategy that aims to have zero or near-zero directio
    - Synchronizes precision settings to ensure consistent position sizes
    - Uses the stricter precision requirement between the two exchanges
 
-#### 2. **Trading Cycle Execution**
+#### 2. **Market Making Cycle Execution**
 
-Each trading cycle follows this sequence:
+Each market making cycle follows this sequence:
 
 **Step 1: Close Existing Positions (if any)**
    - If there are open positions from the previous cycle, close them simultaneously
@@ -88,7 +88,7 @@ Each trading cycle follows this sequence:
 ## ✨ Features
 
 - **Multi-Exchange Support**: Integrates with Hyperliquid (testnet) and Binance Futures (testnet)
-- **Delta-Neutral Strategy**: Automatically balances long and short positions
+- **Delta-Neutral Market Making**: Automatically balances long and short positions
 - **Configurable Intervals**: Set custom execution cycles
 - **PnL Tracking**: Calculates profit/loss for each closed position
 - **Async Operations**: Efficient concurrent API calls
@@ -173,7 +173,7 @@ python main.py
 The bot will:
 1. Initialize connections to both exchanges
 2. Fetch asset information and precision settings
-3. Begin executing trading cycles at the configured interval
+3. Begin executing market making cycles at the configured interval
 4. Run for the specified maximum time (default 30 minutes)
 5. Close all positions and exit gracefully
 
@@ -235,7 +235,7 @@ The bot will:
 │   ├── asset.py             # Trading pair and asset models
 │   └── order.py             # Order data model
 ├── strategy/
-│   └── delta_neutral.py     # Delta-neutral strategy logic
+│   └── delta_neutral.py     # Delta-neutral market making logic
 └── utils/
     └── logger.py            # Logging utility
 ```
@@ -318,7 +318,7 @@ The bot will:
 - Implement proper risk management (max position size, stop-loss)
 - Add WebSocket connections for real-time price updates
 - Add database for historical Orders and PnL tracking
-- Support mainnet trading with proper safety checks
+- Support mainnet market making with proper safety checks
 - Add multiple trading pair support
 
 ## ⚠️ Safety Notes

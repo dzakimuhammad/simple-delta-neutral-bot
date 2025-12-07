@@ -6,7 +6,7 @@ from utils.logger import log
 from models.order import Order, Side
 
 '''
-Delta Neutral Trading Strategy
+Delta Neutral Market Making Strategy
 1. Close existing positions on both exchanges
 2. Compute PnL for closed positions
 3. Fetch current prices from both exchanges
