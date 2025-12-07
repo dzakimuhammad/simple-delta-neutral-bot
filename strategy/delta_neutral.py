@@ -130,18 +130,18 @@ class DeltaNeutralStrategy:
         # Close all positions concurrently
         if close_tasks:
             close_orders = await asyncio.gather(*close_tasks)
-        
-        self.last_long_order = None
-        self.last_short_order = None
 
         # Calculate PnL for closed positions
         pnl = self.calculate_pnl(close_orders)
         log(f"Cycle Position PnL: ${pnl:.4f}")
+
+        self.last_long_order = None
+        self.last_short_order = None
     
     def calculate_pnl(self, exit_orders: list[Order]) -> float:
         """
         Calculate PnL from entry and exit orders.
-        s
+        
         Args:
             exit_orders: List of exit Order objects (closing orders)
         
