@@ -345,14 +345,6 @@ The bot will:
 - Add proper error handling and retry logic
 - Implement monitoring and alerting systems
 
-## 📄 License
-
-MIT License - Feel free to use and modify as needed.
-
-## 🤝 Support
-
-For issues or questions, please [open an issue](https://github.com/dzakimuhammad/simple-delta-neutral-bot/issues) on GitHub.
-
 ---
 
 **Disclaimer**: This bot is for educational and testing purposes only. Use at your own risk.
