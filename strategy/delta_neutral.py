@@ -17,7 +17,7 @@ class DeltaNeutralStrategy:
     def __init__(self, exA: Exchange, exB: Exchange, cfg):
         self.A = exA    # Hyperliquid
         self.B = exB    # Binance
-        self.notional = cfg["notional"]
+        self.notional = Decimal(str(cfg["notional"]))
         self.pair = TradingPair(cfg["base_asset"], cfg["quote_asset"])
 
         self.last_long_order: Order = None   # Order from long position
@@ -76,7 +76,7 @@ class DeltaNeutralStrategy:
             # Compute PnL for closed positions
             if len(close_orders) == 2:
                 pnl = self.calculate_pnl(close_orders)
-                log(f"Cycle Position PnL: ${pnl:.4f}")
+                log(f"Cycle Position PnL: ${str(pnl)}")
             
             log("Positions closed.\n")
 
@@ -86,7 +86,7 @@ class DeltaNeutralStrategy:
             self.B.get_price(self.asset_B)
         )
         
-        log(f"{self.A.name.value} price: ${price_A:.4f}, {self.B.name.value} price: ${price_B:.4f}")
+        log(f"{self.A.name.value} price: ${str(price_A)}, {self.B.name.value} price: ${str(price_B)}")
         # Determine which exchange has lower price for long position and open positions concurrently
         if price_A < price_B:
             log(f"Opening LONG on {self.A.name.value}, SHORT on {self.B.name.value}...")
@@ -102,10 +102,10 @@ class DeltaNeutralStrategy:
             )
         
         # Calculate and log the price delta
-        delta = float(self.last_long_order.price * self.last_long_order.size - self.last_short_order.price * self.last_short_order.size)
-        pct = delta / float(self.last_long_order.price) * 100
+        delta = self.last_long_order.price * self.last_long_order.size - self.last_short_order.price * self.last_short_order.size
+        pct = delta / self.last_long_order.price * Decimal('100')
         
-        log(f"Entry Delta: ${delta:.4f} ({pct:.4f}%)")
+        log(f"Entry Delta: ${str(delta)} ({str(round(pct, 4))}%)")
 
     async def close_positions(self):
         """
@@ -133,12 +133,12 @@ class DeltaNeutralStrategy:
 
         # Calculate PnL for closed positions
         pnl = self.calculate_pnl(close_orders)
-        log(f"Cycle Position PnL: ${pnl:.4f}")
+        log(f"Cycle Position PnL: ${str(pnl)}")
 
         self.last_long_order = None
         self.last_short_order = None
     
-    def calculate_pnl(self, exit_orders: list[Order]) -> float:
+    def calculate_pnl(self, exit_orders: list[Order]) -> Decimal:
         """
         Calculate PnL from entry and exit orders.
         
@@ -146,11 +146,11 @@ class DeltaNeutralStrategy:
             exit_orders: List of exit Order objects (closing orders)
         
         Returns:
-            Total PnL as float
+            Total PnL as Decimal
         """
         if not self.last_long_order or not self.last_short_order:
             log("Warning: Missing long or short entry order")
-            return 0.0
+            return Decimal('0')
         
         # Find corresponding exit orders
         long_exit = None
@@ -166,17 +166,17 @@ class DeltaNeutralStrategy:
         
         if not long_exit or not short_exit:
             log("Warning: Missing long or short exit order")
-            return 0.0
+            return Decimal('0')
         
         # Calculate PnL for long position: (exit - entry) * size
-        long_pnl = float((long_exit.price - self.last_long_order.price) * self.last_long_order.size)
+        long_pnl = (long_exit.price - self.last_long_order.price) * self.last_long_order.size
         
         # Calculate PnL for short position: (entry - exit) * size
-        short_pnl = float((self.last_short_order.price - short_exit.price) * self.last_short_order.size)
+        short_pnl = (self.last_short_order.price - short_exit.price) * self.last_short_order.size
         
         total_pnl = long_pnl + short_pnl
         
-        log(f"Long PnL: ${long_pnl:+.4f} (Entry: ${float(self.last_long_order.price):.4f}, Exit: ${float(long_exit.price):.4f})")
-        log(f"Short PnL: ${short_pnl:+.4f} (Entry: ${float(self.last_short_order.price):.4f}, Exit: ${float(short_exit.price):.4f})")
+        log(f"Long PnL: ${str(long_pnl)} (Entry: ${str(self.last_long_order.price)}, Exit: ${str(long_exit.price)})")
+        log(f"Short PnL: ${str(short_pnl)} (Entry: ${str(self.last_short_order.price)}, Exit: ${str(short_exit.price)})")
         
         return total_pnl

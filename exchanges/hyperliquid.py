@@ -40,19 +40,19 @@ class Hyperliquid(Exchange):
             log(f"Hyperliquid asset info not found for {asset_name}: {e}")
             raise
 
-    async def get_price(self, asset: ExchangeAsset) -> float:
+    async def get_price(self, asset: ExchangeAsset) -> Decimal:
         all_mids = self.Info.all_mids()
         mid_price = all_mids[asset.exchange_symbol]
-        return float(mid_price)
+        return Decimal(str(mid_price))
 
-    async def open_position(self, asset: ExchangeAsset, side: Side, price: float, notional: float) -> Order:
+    async def open_position(self, asset: ExchangeAsset, side: Side, price: Decimal, notional: Decimal) -> Order:
         # Convert from notional to size in asset units
         qty = round(notional / price, asset.base_quantity_precision)
 
         is_buy = side == Side.LONG
 
         try:
-            order_result = self.HLExchange.market_open(asset.exchange_symbol, is_buy, qty)
+            order_result = self.HLExchange.market_open(asset.exchange_symbol, is_buy, float(qty))
         
             if order_result["status"] == "ok":
                 for status in order_result["response"]["data"]["statuses"]:
@@ -65,7 +65,7 @@ class Hyperliquid(Exchange):
                             asset=asset,
                             side=side,
                             price=filled_price,
-                            size=Decimal(str(qty))
+                            size=qty
                         )
                         self.last_order = order
                         return order
@@ -76,14 +76,14 @@ class Hyperliquid(Exchange):
             log(f"Exception during market order on Hyperliquid: {e}")
             raise
 
-    async def open_long(self, asset: ExchangeAsset, price: float, notional: float) -> Order:
+    async def open_long(self, asset: ExchangeAsset, price: Decimal, notional: Decimal) -> Order:
         """Open a long position"""
         return await self.open_position(asset, Side.LONG, price, notional)
 
-    async def open_short(self, asset: ExchangeAsset, price: float,  notional: float) -> Order:
+    async def open_short(self, asset: ExchangeAsset, price: Decimal,  notional: Decimal) -> Order:
         """Open a short position"""
         return await self.open_position(asset, Side.SHORT, price, notional)
-    async def close_position(self, close_price: float) -> Order:
+    async def close_position(self, close_price: Decimal) -> Order:
         if not self.last_order:
             raise Exception("No position to close")
             

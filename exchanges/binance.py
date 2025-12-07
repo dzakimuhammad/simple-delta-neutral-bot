@@ -37,22 +37,22 @@ class BinanceFutures(Exchange):
                 log(f"Binance asset info not found for {pair}")
                 raise Exception(f"Asset info not found for {pair}")
     
-    async def get_price(self, asset: ExchangeAsset) -> float:
+    async def get_price(self, asset: ExchangeAsset) -> Decimal:
         async with aiohttp.ClientSession() as session:
             async with session.get(f"{self.base_url}/fapi/v2/ticker/price?symbol={asset.exchange_symbol}") as r:
                 data = await r.json()
                 if "price" not in data:
                     raise Exception(f"Error getting price: {data}")
-                return float(data["price"])
+                return Decimal(data["price"])
 
-    async def open_position(self, asset: ExchangeAsset, side: Side, price: float, notional: float) -> Order:
+    async def open_position(self, asset: ExchangeAsset, side: Side, price: Decimal, notional: Decimal) -> Order:
         qty = round(notional / price, asset.base_quantity_precision)
 
         params = {
             "symbol": asset.exchange_symbol,
             "side": "BUY" if side == Side.LONG else "SELL",
             "type": "MARKET",
-            "quantity": qty,
+            "quantity": float(qty),
             "timestamp": int(time.time() * 1000),
         }
 
@@ -68,20 +68,20 @@ class BinanceFutures(Exchange):
         order = Order(
             asset=asset,
             side=side,
-            price=Decimal(str(price)),
-            size=Decimal(str(qty))
+            price=price,
+            size=qty
         )
         self.last_order = order
         log(f"Opening {side.value} {qty} {asset.pair.base_asset} on Binance @ ${price}")
         return order
 
-    async def open_long(self, asset: ExchangeAsset, price: float, notional: float) -> Order:
+    async def open_long(self, asset: ExchangeAsset, price: Decimal, notional: Decimal) -> Order:
         return await self.open_position(asset, Side.LONG, price, notional)
 
-    async def open_short(self, asset: ExchangeAsset, price: float, notional: float) -> Order:
+    async def open_short(self, asset: ExchangeAsset, price: Decimal, notional: Decimal) -> Order:
         return await self.open_position(asset, Side.SHORT, price, notional)
 
-    async def close_position(self, close_price: float) -> Order:
+    async def close_position(self, close_price: Decimal) -> Order:
         """Close a position by placing opposite side order"""
         if not self.last_order:
             raise Exception("No position to close")
@@ -108,7 +108,7 @@ class BinanceFutures(Exchange):
         close_order = Order(
             asset=self.last_order.asset,
             side=Side.SHORT if self.last_order.side == Side.LONG else Side.LONG,
-            price=Decimal(str(close_price)),
+            price=close_price,
             size=self.last_order.size
         )
         log(f"Closed {self.last_order.side.value} {self.last_order.asset.pair.base_asset} on Binance @ ${close_price}")
